@@ -1,0 +1,14 @@
+[Unit]
+Description=MyApp Flask backend
+After=network.target
+
+[Service]
+User=oleg
+WorkingDirectory=/home/work/MyApp/server
+EnvironmentFile=/home/work/MyApp/server/.env
+ExecStart=/home/work/env/bin/gunicorn --workers 2 --bind 127.0.0.1:5050 app:app
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

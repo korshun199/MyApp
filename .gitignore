@@ -3,3 +3,9 @@ build/
 app/build/
 local.properties
 .DS_Store
+
+# Секреты и временные файлы Flask
+server/.env
+server/__pycache__/
+**/__pycache__/
+*.pyc

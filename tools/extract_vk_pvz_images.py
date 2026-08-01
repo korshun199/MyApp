@@ -4,7 +4,7 @@ from playwright.sync_api import sync_playwright
 
 
 URL = "https://vk.ru/pvz_dnr"
-OUT_DIR = Path("data/pvz/all")
+OUT_DIR = Path("pvz_dnr_images")
 OUT_DIR.mkdir(exist_ok=True)
 
 

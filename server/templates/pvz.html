@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>QR-карточки ПВЗ</title>
+    <style>
+        :root { font-family: system-ui, sans-serif; color: #20242a; background: #f4f6f8; }
+        body { margin: 0; padding: 16px; }
+        main { max-width: 1100px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+        h1 { margin: 0; font-size: 24px; }
+        .back { color: #185abd; text-decoration: none; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+        .card { background: white; padding: 8px; border-radius: 12px; box-shadow: 0 5px 18px #00000012; }
+        .card img { width: 100%; aspect-ratio: 0.706; object-fit: cover; border-radius: 8px; display: block; }
+        .card a { display: block; margin-top: 7px; text-align: center; color: #185abd; text-decoration: none; font-size: 14px; }
+    </style>
+</head>
+<body>
+<main>
+    <header>
+        <h1>QR-карточки ПВЗ</h1>
+        <a class="back" href="{{ url_for('app_page', tk=token) }}">На главную</a>
+    </header>
+    <section class="grid">
+    {% for image in images %}
+        <div class="card">
+            <a href="{{ url_for('pvz_image', filename=image, tk=token) }}" target="_blank" rel="noopener">
+                <img src="{{ url_for('pvz_image', filename=image, tk=token) }}" loading="lazy" alt="QR-карточка ПВЗ {{ loop.index }}">
+            </a>
+            <a href="{{ url_for('pvz_image', filename=image, tk=token) }}" target="_blank" rel="noopener">Открыть оригинал</a>
+        </div>
+    {% endfor %}
+    </section>
+</main>
+</body>
+</html>

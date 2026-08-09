@@ -13,7 +13,7 @@
         .eyebrow { margin: 0 0 6px; color: #7dd3fc; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
         h1 { margin: 0; color: white; font-size: clamp(24px, 5vw, 34px); letter-spacing: -.03em; }
         .back, .upload-label, .sort a { padding: 10px 14px; border: 1px solid #65d9eb; border-radius: 12px; color: white; font-size: 14px; font-weight: 700; text-decoration: none; white-space: nowrap; }
-        .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 20px; }
+        .toolbar { display: flex; align-items: center; justify-content: flex-start; flex-wrap: wrap; gap: 14px; margin-bottom: 20px; }
         .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
         .upload-label { display: inline-block; cursor: pointer; background: #078eac; }
         .upload input { display: none; }
@@ -35,7 +35,7 @@
         .meta { display: flex; justify-content: space-between; gap: 8px; margin-top: 8px; color: #7f9abb; font-size: 12px; }
         .card-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 9px; }
         .card-footer .meta { margin-top: 0; }
-        @media (max-width: 620px) { body { padding: 10px; } header { align-items: flex-start; flex-direction: column; } .back { width: 100%; text-align: center; } .toolbar { align-items: stretch; flex-direction: column; } .actions { flex-direction: column; align-items: stretch; } .upload-label { text-align: center; } .folder-form input { width: 100%; } .folder-form { display: grid; grid-template-columns: 1fr auto; } .sort { justify-content: center; } .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
+        @media (max-width: 620px) { body { padding: 10px; } header { align-items: flex-start; flex-direction: column; } .back { width: 100%; text-align: center; } .toolbar { align-items: flex-start; flex-direction: column; gap: 10px; } .actions { flex-direction: row; align-items: center; flex-wrap: wrap; } .upload-label { text-align: center; } .folder-form input { width: 130px; } .folder-form { display: flex; } .sort { justify-content: flex-start; } .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
     </style>
 </head>
 <body>
@@ -47,7 +47,7 @@
     <div class="toolbar">
         <div class="actions">
             <form method="post" enctype="multipart/form-data" action="{{ url_for('files_page', tk=token) }}">
-                <label class="upload-label">＋ Загрузить файл<input type="file" name="file" onchange="this.form.submit()"></label>
+                <label class="upload-label"><input type="file" name="file" onchange="this.form.submit()"></label>
             </form>
             <form class="folder-form" method="post" action="{{ url_for('create_directory', tk=token) }}">
                 <input name="name" maxlength="80" placeholder="Имя каталога" required>

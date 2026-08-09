@@ -5,19 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MyApp</title>
     <style>
-        :root { color-scheme: light; font-family: system-ui, sans-serif; }
-        body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f4f6fa; color: #1f2937; }
-        main { width: min(92vw, 560px); padding: 32px; box-sizing: border-box; background: white; border-radius: 20px; box-shadow: 0 12px 36px #1f29371a; text-align: center; }
-        h1 { margin-top: 0; }
-        .button { display: inline-block; padding: 12px 18px; border-radius: 10px; background: #2457d6; color: white; text-decoration: none; }
+        :root { font-family: Inter, system-ui, -apple-system, sans-serif; color: #e8f1ff; background: #0b1729; }
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; padding: 18px; display: grid; place-items: center; background: radial-gradient(circle at 15% 0%, #173964 0, #0b1729 48%, #07111f 100%); }
+        main { width: min(94vw, 620px); overflow: hidden; border: 1px solid #28466d; border-radius: 26px; background: #101f35ef; box-shadow: 0 24px 70px #02081799; }
+        header { padding: 24px 26px 22px; background: linear-gradient(120deg, #0a1930, #163d6d 62%, #078eac); }
+        .eyebrow { margin: 0 0 8px; color: #7dd3fc; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+        h1 { margin: 0; color: white; font-size: clamp(28px, 7vw, 38px); letter-spacing: -.03em; }
+        .content { padding: 26px; }
+        .menu { display: grid; gap: 13px; }
+        .button { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 17px 18px; border: 1px solid #31557f; border-radius: 15px; background: #152b49; color: #e8f1ff; font-size: 16px; font-weight: 700; text-decoration: none; transition: transform .15s ease, border-color .15s ease, background .15s ease; }
+        .button:hover { transform: translateY(-2px); border-color: #42e8c5; background: #1b3a60; }
+        .button span { color: #7dd3fc; font-size: 22px; }
+        footer { padding: 0 26px 22px; color: #7188a6; font-size: 12px; }
     </style>
 </head>
 <body>
 <main>
-        <h1>MyApp</h1>
-        <p>Соединение с VPS установлено.</p>
-        <p>Страница успешно получена по защищённому токену.</p>
-        <p><a class="button" href="{{ url_for('pvz_gallery', tk=request.args.get('tk', '')) }}">Открыть QR-карточки ПВЗ</a></p>
+    <header><p class="eyebrow">VPS WEB APPLICATION</p><h1>MyApp</h1></header>
+    <section class="content">
+        <nav class="menu" aria-label="Разделы приложения">
+            <a class="button" href="{{ url_for('pvz_gallery', tk=request.args.get('tk', '')) }}">QR-карточки ПВЗ <span>→</span></a>
+            <a class="button" href="{{ url_for('files_page', tk=request.args.get('tk', '')) }}">File Server <span>→</span></a>
+        </nav>
+    </section>
+    <footer>Рабочая панель MyApp · защищённое соединение</footer>
 </main>
 </body>
 </html>

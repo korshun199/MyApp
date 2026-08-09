@@ -40,15 +40,16 @@ def files_page():
     files = []
     if FILES_DIR.is_dir():
         for path in FILES_DIR.iterdir():
-            if not path.is_file():
+            if not path.is_file() and not path.is_dir():
                 continue
             stat = path.stat()
             files.append({
                 "name": path.name,
-                "bytes": stat.st_size,
-                "size": format_file_size(stat.st_size),
+                "bytes": stat.st_size if path.is_file() else -1,
+                "size": format_file_size(stat.st_size) if path.is_file() else "каталог",
                 "modified": stat.st_mtime,
-                "kind": file_kind(path.name),
+                "kind": "folder" if path.is_dir() else file_kind(path.name),
+                "is_dir": path.is_dir(),
             })
 
     sort_by = request.args.get("sort", "name")
@@ -59,6 +60,36 @@ def files_page():
     else:
         files.sort(key=lambda item: item["name"].lower())
     return render_template("files.html", files=files, token=token, sort_by=sort_by)
+
+
+def safe_files_path(name: str) -> Path:
+    root = FILES_DIR.resolve()
+    target = (root / name).resolve()
+    if target != root and root not in target.parents:
+        abort(400)
+    return target
+
+
+@app.post("/files/mkdir")
+def create_directory():
+    check_token()
+    name = secure_filename(request.form.get("name", "").strip())
+    if name:
+        FILES_DIR.mkdir(parents=True, exist_ok=True)
+        safe_files_path(name).mkdir(exist_ok=True)
+    return redirect(url_for("files_page", tk=request.args.get("tk", "")))
+
+
+@app.post("/files/delete")
+def delete_file_or_directory():
+    check_token()
+    name = request.form.get("name", "").strip()
+    target = safe_files_path(name)
+    if target.is_file():
+        target.unlink()
+    elif target.is_dir() and not any(target.iterdir()):
+        target.rmdir()
+    return redirect(url_for("files_page", tk=request.args.get("tk", "")))
 
 
 def format_file_size(size: int) -> str:
@@ -91,6 +122,9 @@ def file_kind(filename: str) -> str:
 @app.get("/file/<path:filename>")
 def file_download(filename):
     check_token()
+    target = safe_files_path(filename)
+    if not target.is_file():
+        abort(404)
     return send_from_directory(FILES_DIR, filename, as_attachment=False)
 
 

@@ -39,11 +39,53 @@ def files_page():
 
     files = []
     if FILES_DIR.is_dir():
-        files = sorted(
-            path.name for path in FILES_DIR.iterdir()
-            if path.is_file()
-        )
-    return render_template("files.html", files=files, token=token)
+        for path in FILES_DIR.iterdir():
+            if not path.is_file():
+                continue
+            stat = path.stat()
+            files.append({
+                "name": path.name,
+                "bytes": stat.st_size,
+                "size": format_file_size(stat.st_size),
+                "modified": stat.st_mtime,
+                "kind": file_kind(path.name),
+            })
+
+    sort_by = request.args.get("sort", "name")
+    if sort_by == "size":
+        files.sort(key=lambda item: item["bytes"], reverse=True)
+    elif sort_by == "date":
+        files.sort(key=lambda item: item["modified"], reverse=True)
+    else:
+        files.sort(key=lambda item: item["name"].lower())
+    return render_template("files.html", files=files, token=token, sort_by=sort_by)
+
+
+def format_file_size(size: int) -> str:
+    units = ("Б", "КБ", "МБ", "ГБ")
+    value = float(size)
+    for unit in units:
+        if value < 1024 or unit == units[-1]:
+            return f"{value:.0f} {unit}" if unit == "Б" else f"{value:.1f} {unit}"
+        value /= 1024
+    return f"{size} Б"
+
+
+def file_kind(filename: str) -> str:
+    extension = Path(filename).suffix.lower()
+    if extension in {".jpg", ".jpeg", ".png", ".gif", ".webp"}:
+        return "image"
+    if extension in {".apk", ".aab"}:
+        return "android"
+    if extension in {".exe", ".msi"}:
+        return "windows"
+    if extension in {".py", ".js", ".java", ".html", ".css"}:
+        return "code"
+    if extension in {".zip", ".rar", ".7z", ".tar", ".gz"}:
+        return "archive"
+    if extension in {".ico", ".svg"}:
+        return "icon"
+    return "file"
 
 
 @app.get("/file/<path:filename>")
